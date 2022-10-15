@@ -65,7 +65,7 @@ npm i libsodium-wrappers
 
 ## How to use
 
-1.  Download the template. [Download](wait for it)
+1.  Download the template. [Download](https://github.com/devloli-main/Button-MusicBot-Template-Discord.jsv14/archive/refs/heads/main.zip)
 2.  Create a new application in the [Discord Developer Portal](https://discord.com/developers/applications) click on `New Application` and give it a name.
 3.  Go to the `Bot` tab and click `Add Bot`.
 4.  Go to the `OAuth2 - General` tab and select the `in-app Authorization` in "Authorization Method".
