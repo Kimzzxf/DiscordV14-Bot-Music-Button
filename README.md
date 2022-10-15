@@ -65,7 +65,7 @@ npm i libsodium-wrappers
 
 ## How to use
 
-0.  Visual Code [Plugin](vscode:extension/ParthR2031.colorful-comments)
+0.  [Visual Code Plugin](https://marketplace.visualstudio.com/items?itemName=ParthR2031.colorful-comments)
 1.  Download the template. [Download](https://github.com/devloli-main/Button-MusicBot-Template-Discord.jsv14/archive/refs/heads/main.zip)
 2.  Create a new application in the [Discord Developer Portal](https://discord.com/developers/applications) click on `New Application` and give it a name.
 3.  Go to the `Bot` tab and click `Add Bot`.
