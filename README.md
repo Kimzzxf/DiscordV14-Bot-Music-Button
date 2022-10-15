@@ -53,7 +53,7 @@ This is a template for a Music Discord bot with buttons, modal, and slash comman
 ## Installation Packages
 
 ```bash
-npm init or npm init -y (if you want to skip the questions but you folder not a space or special character)
+npm init or npm init -y (if you folder name not a space or special character)
 npm i discord.js
 npm i @discordjs/rest
 npm i @discordjs/opus
@@ -65,6 +65,7 @@ npm i libsodium-wrappers
 
 ## How to use
 
+0.  Visual Code [Plugin](vscode:extension/ParthR2031.colorful-comments)
 1.  Download the template. [Download](https://github.com/devloli-main/Button-MusicBot-Template-Discord.jsv14/archive/refs/heads/main.zip)
 2.  Create a new application in the [Discord Developer Portal](https://discord.com/developers/applications) click on `New Application` and give it a name.
 3.  Go to the `Bot` tab and click `Add Bot`.
