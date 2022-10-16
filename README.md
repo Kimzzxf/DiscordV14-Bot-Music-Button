@@ -1,4 +1,4 @@
-# Button Music Bot Template (Discord.js v14)
+# Music Bot Template (Discord.js v14)
 
 This is a template for a Music Discord bot with buttons, modal, and slash commands.
 
