@@ -31,21 +31,6 @@ This is a template for a Music Discord bot with buttons, modal, and slash comman
 -   [x] Event handler - The bot will automatically load all events in the events folder.
 -   [x] Deploy commands - The bot will automatically deploy all commands in the commands folder.
 
-## Config
-
-```json
-{
-    "clientID": "APPICATION_ID",
-    "token": "TOKEN",
-    "ownerID": "OWNER_ID",
-    "YouTubeAPI": "YOUTUBE_API_KEY"
-}
-```
--   `clientID` - Your application ID. [Go to Discord Developer Portal](https://discord.com/developers/applications)
--   `token` - Your bot token. [How to get a token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
--   `ownerID` - Your Discord ID. [How to get it?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
--   `YouTubeAPI` - Your YouTube API key. [Get a YouTube data API key](https://developers.google.com/youtube/v3/getting-started)
-
 ## Requirements
 
 -   [Node.js](https://nodejs.org/en/) v16.6.0 or newer
@@ -79,6 +64,21 @@ npm i libsodium-wrappers
 11. Go to the [YouTube Data API](https://console.developers.google.com/apis/library/youtube.googleapis.com) and get a YouTube API key.
 12. Open the `config.json` file and paste the application ID, token, owner ID and YouTube API key.
 13. Run `node index.js` or `node .` in the terminal.
+
+## Config
+
+```json
+{
+    "clientID": "APPICATION_ID",
+    "token": "TOKEN",
+    "ownerID": "OWNER_ID",
+    "YouTubeAPI": "YOUTUBE_API_KEY"
+}
+```
+-   `clientID` - Your application ID. [Go to Discord Developer Portal](https://discord.com/developers/applications)
+-   `token` - Your bot token. [How to get a token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
+-   `ownerID` - Your Discord ID. [How to get it?](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
+-   `YouTubeAPI` - Your YouTube API key. [Get a YouTube data API key](https://developers.google.com/youtube/v3/getting-started)
 
 ## Exemple Slash commands 
 
