@@ -21,16 +21,11 @@ module.exports = {
             return;
         }
 
-        if (!fs.existsSync(`./data/${interaction.guild.id}.json`)) {
-            fs.writeFileSync(`./data/${interaction.guild.id}.json`, JSON.stringify({
-                controler: "",
-                category: "",
-                voiceChannels: []
-            }, null, 4));
+        if (!fs.existsSync(`./database/${interaction.guild.id}.json`)) {
             await interaction.reply({ content: '🔃 Setup started', ephemeral: true });
         } else {
             const channels = interaction.guild.channels.cache.map(channel => channel.id);
-            const data = JSON.parse(fs.readFileSync(`./data/${interaction.guild.id}.json`));
+            const data = JSON.parse(fs.readFileSync(`./database/${interaction.guild.id}.json`));
             if (commandChannel.id === data.controler) {
                 await interaction.reply({ content: '⚠️ Please use this command in a different channel!', ephemeral: true });
                 return;
@@ -49,12 +44,6 @@ module.exports = {
                     }
                 }
             }
-            fs.writeFileSync(`./data/${interaction.guild.id}.json`, JSON.stringify({
-                controler: "",
-                category: "",
-                voiceChannels: []
-            }, null, 4));
-            await interaction.editReply({ content: '✅ Successfully reset setup', ephemeral: true });
         }
 
         const category = await interaction.guild.channels.create({
@@ -80,8 +69,6 @@ module.exports = {
 
             musicVoiceChannels.push(voiceChannel.id);
         }
-
-        fs.writeFileSync(`./data/${interaction.guild.id}.json`, JSON.stringify({ controler: controler.id, category: category.id, voiceChannels: musicVoiceChannels }, null, 4));
 
         const controlRow1 = new ActionRowBuilder()
             .addComponents(
@@ -145,6 +132,7 @@ module.exports = {
 
         // & Embed Guide: https://discordjs.guide/popular-topics/embeds.html#embed-preview
 
+        fs.writeFileSync(`./database/${interaction.guild.id}.json`, JSON.stringify({ controler: controler.id, category: category.id, voiceChannels: musicVoiceChannels }, null, 4));
         await controler.send({ embeds: [controlerEmbed], components: [controlRow1, controlRow2] });
         await interaction.editReply({ content: `✅ Successfully setup the music bot!\n\n🎶 Category: ${category}\n🎶 Controler: ${controler}\n🎶 Voice Channels: ${musicVoiceChannels.map(channel => `<#${channel}>`).join(', ')}`, ephemeral: true });
     }

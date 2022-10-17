@@ -26,13 +26,16 @@ module.exports = {
                 fs.mkdirSync('./errors', { recursive: true }, (err) => {
                     if (err) return console.error(`[ERROR] cannot create folder errors: ${err.stack}`.red); 
 
-                    fs.writeFile(`./errors/${filename}`, `[ERROR] [${datestring}] ${interaction.commandName}: ${error.stack}`, (err) => { 
+                    fs.writeFileSync(`./errors/${filename}`, `[ERROR] [${datestring}] ${interaction.commandName}: ${error.stack}`, (err) => { 
 
                         if (err) return console.error(`[ERROR] cannot create file ${filename}: ${err.stack}`.red);
                     });
                 });
             } else {
-                fs.writeFileSync(`./errors/${filename}`, `${datestring} ${interaction.commandName}\n${error.stack}`); 
+                fs.writeFileSync(`./errors/${filename}`, `[ERROR] [${datestring}] ${interaction.commandName}: ${error.stack}`, (err) => { 
+
+                    if (err) return console.error(`[ERROR] cannot create file ${filename}: ${err.stack}`.red);
+                });
             }
 
             const { ownerID } = require('../config.json'); 

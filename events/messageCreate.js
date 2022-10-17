@@ -9,10 +9,9 @@ module.exports = {
         if (message.author.bot) return;
 
         const guildID = message.guild.id;
-        if (!fs.existsSync(`./data/${guildID}.json`)) return; 
-        const data = require(`../data/${guildID}.json`);
+        if (!fs.existsSync(`./database/${guildID}.json`)) return; 
+        const data = JSON.parse(fs.readFileSync(`./database/${guildID}.json`));
         const controlChannel = message.guild.channels.cache.get(data.controler);
-
         if (!message.channel.id === controlChannel) return;
 
         const embed = new EmbedBuilder()

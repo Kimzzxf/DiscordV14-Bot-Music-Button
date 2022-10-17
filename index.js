@@ -62,8 +62,8 @@ client.distube = new DisTube(client, {
         fs.mkdirSync('./errors');
     }
 
-    if (!fs.existsSync('./data')) {
-        fs.mkdirSync('./data');
+    if (!fs.existsSync('./database')) {
+        fs.mkdirSync('./database');
     }
  
     client.login(token); // Login to Discord
