@@ -22,7 +22,16 @@ module.exports = {
             if (!permissions.has(PermissionFlagsBits.SPEAK)) return interaction.reply({ content: 'I cannot connect to your voice channel, make sure I have the proper permissions!', ephemeral: true });
 
             await interaction.deferReply({ ephemeral: true });
-            await client.distube.play(voiceChannel, musicNameOrLink, { member: interaction.member });
+
+            if (musicNameOrLink.includes('https://' || 'http://')) {
+                if (!musicNameOrLink.includes('youtube.com' || 'youtu.be')) { 
+                    return interaction.followUp({ embeds: [client.embeds.warn('⚠️ The link you provided is not supported!')] });
+                } else {
+                    await client.distube.play(voiceChannel, musicNameOrLink, { member: interaction.member });
+                }
+            } else {
+                await client.distube.play(voiceChannel, musicNameOrLink, { member: interaction.member });
+            }
 
             const queue = await client.distube.getQueue(interaction.guildId);
             const lastSong = queue.songs[queue.songs.length - 1];
