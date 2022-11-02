@@ -95,8 +95,3 @@ module.exports = {
     }
 }
 ```
-
-## Contact
-
--   [Discord Server](https://devloli-main.github.io/discord)
--   [Discord](https://discord.com/users/800422993897586718)
