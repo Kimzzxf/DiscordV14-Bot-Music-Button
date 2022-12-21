@@ -1,7 +1,7 @@
 const { REST } = require('@discordjs/rest'); 
 const { Routes } = require('discord.js');
 const fs = require('fs');
-const {token, clientID, guildId} =  require('./config'); 
+const {token, clientID} =  require('./config'); 
 
 exports.DeployCommands = async () => { 
     /*
