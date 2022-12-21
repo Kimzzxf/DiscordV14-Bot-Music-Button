@@ -1,4 +1,4 @@
-const { EmbedBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
     name: 'interactionCreate',
@@ -82,23 +82,74 @@ module.exports = {
             if (queue.songs[0].user.id !== interaction.user.id) return interaction.reply({ content: '⚠️ You are not the one who started the music!', ephemeral: true });
             
             client.distube.stop(guildID);
-            await interaction.reply({ content: '⏹️ Stopped the music!', ephemeral: true });
+
+            const reply = await interaction.channel.send({ content: '⏹️ Stopped the music!', ephemeral: true });
+            setTimeout(() => reply.delete(), 5000);
         } else if (button === 'queue') {
             if (!queue) return interaction.reply({ content: '⚠️ There is nothing playing!', ephemeral: true });
 
-            const embed = new EmbedBuilder()
+            const queueEmbed = new EmbedBuilder()
                 .setTitle('🎶 Queue')
-                .setDescription(`**Now playing:** ${queue.songs[0].name}\n**Duration:** ${queue.songs[0].formattedDuration}\n**Requested by:** ${queue.songs[0].user}`)
                 .setColor('#6104b9')
                 .setThumbnail(queue.songs[0].thumbnail)
-                .setFooter({ text: client.user.username, iconURL: client.user.displayAvatarURL({ dynamic: true, size: 4096 }) })
+                .setFooter({ text: `Page 1 of ${Math.ceil(queue.songs.length / 5)}`, iconURL: client.user.displayAvatarURL({ dynamic: true, size: 4096 }) })
                 .setTimestamp();
 
-            for (let i = 1; i < queue.songs.length; i++) {
-                embed.addFields({ name: `**${i}.** ${queue.songs[i].name}`, value: `**Duration:** ${queue.songs[i].formattedDuration}\n**Requested by:** ${queue.songs[i].user.tag}` });
+            for (let i = 0; i < 5; i++) {
+                if (!queue.songs[i]) break;
+                queueEmbed.addFields({ name: `${i + 1}. ${queue.songs[i].name}`, value: `Duration: ${queue.songs[i].formattedDuration} | Requested by: ${queue.songs[i].user}` });
             }
 
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            const queueRow = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('queuePrevious')
+                        .setEmoji('⬅️')
+                        .setStyle(ButtonStyle.Primary)
+                        .setDisabled(true),
+                    new ButtonBuilder()
+                        .setCustomId('queueNext')
+                        .setEmoji('➡️')
+                        .setStyle(ButtonStyle.Primary)
+                        .setDisabled(queue.songs.length <= 5)
+                );
+
+            const queueMessage = await interaction.reply({ embeds: [queueEmbed], components: [queueRow], fetchReply: true });
+
+            const filter = (i) => i.user.id === interaction.user.id;
+            const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
+
+            let page = 1;
+            collector.on('collect', async (i) => {
+                if (i.customId === 'queuePrevious') {
+                    page--;
+                    for (let i = (page - 1) * 5; i < page * 5; i++) {
+                        if (!queue.songs[i]) break;
+                        queueEmbed.spliceFields(i - (page - 1) * 5, 1, { name: `${i + 1}. ${queue.songs[i].name}`, value: `Duration: ${queue.songs[i].formattedDuration} | Requested by: ${queue.songs[i].user}` });
+                    }
+
+                    queueEmbed.setFooter({ text: `Page ${page} of ${Math.ceil(queue.songs.length / 5)}`, iconURL: client.user.displayAvatarURL({ dynamic: true, size: 4096 }) });
+                } else if (i.customId === 'queueNext') {
+                    page++;
+                    queueEmbed.setFields();
+                    for (let i = (page - 1) * 5; i < page * 5; i++) {
+                        if (!queue.songs[i]) break;
+                        queueEmbed.addFields({ name: `${i + 1}. ${queue.songs[i].name}`, value: `Duration: ${queue.songs[i].formattedDuration} | Requested by: ${queue.songs[i].user}` });
+                    }
+
+                    queueEmbed.setFooter({ text: `Page ${page} of ${Math.ceil(queue.songs.length / 5)}`, iconURL: client.user.displayAvatarURL({ dynamic: true, size: 4096 }) });
+                }
+
+                queueRow.components[0].setDisabled(page === 1);
+                queueRow.components[1].setDisabled(page === Math.ceil(queue.songs.length / 5));
+
+                await i.update({ embeds: [queueEmbed], components: [queueRow] });
+            });
+
+            collector.on('end', async () => {
+                if (!queueMessage) return;
+                await queueMessage.delete();
+            });
         } else if (button === 'nowplaying') {
             if (!queue) return interaction.reply({ content: '⚠️ There is nothing playing!', ephemeral: true });
 
@@ -122,19 +173,9 @@ module.exports = {
             	.setStyle(TextInputStyle.Short)
                 .setRequired(true);
 
-            const limitInput = new TextInputBuilder()
-                .setCustomId('limitInput')
-                .setLabel("Enter the number of results to display")
-                .setPlaceholder("Max 10")
-                .setStyle(TextInputStyle.Short)
-                .setMinLength(1)
-                .setMaxLength(2)
-                .setRequired(true);
-
             const searchActionRow = new ActionRowBuilder().addComponents(searchInput);
-            const limitActionRow = new ActionRowBuilder().addComponents(limitInput);
 
-            searchModal.addComponents(searchActionRow, limitActionRow);
+            searchModal.addComponents(searchActionRow);
 
             await interaction.showModal(searchModal);
         }

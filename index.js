@@ -1,6 +1,9 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { token } = require('./config.json');
 const { DeployCommands } = require('./deploy-commands');
+const { DisTube } = require('distube');
+const fs = require('fs');
+require('colors');
 
 const client = new Client({ intents: [
     GatewayIntentBits.Guilds,
@@ -9,10 +12,6 @@ const client = new Client({ intents: [
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildVoiceStates,
 ] });
-const fs = require('fs');
-require('colors');
-const { DisTube } = require('distube');
-
 client.distube = new DisTube(client, {
     emitNewSongOnly: false,
     leaveOnEmpty: true,
@@ -20,13 +19,13 @@ client.distube = new DisTube(client, {
     leaveOnStop: true,
     savePreviousSongs: false,
     emitAddSongWhenCreatingQueue: false,
-    searchSongs: 0,
+    searchSongs: 5,
     nsfw: false,
     emptyCooldown: 25
 });
 
 (async () => {
-    await DeployCommands();
+    await DeployCommands(); // Deploy commands
 
     // Handle all events
     const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js')); 

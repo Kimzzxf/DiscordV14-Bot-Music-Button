@@ -1,6 +1,5 @@
 {
     "clientID": "APPICATION_ID",
     "token": "TOKEN",
-    "ownerID": "OWNER_ID",
-    "YouTubeAPI": "YOUTUBE_API_KEY"
+    "ownerID": "OWNER_ID"
 }

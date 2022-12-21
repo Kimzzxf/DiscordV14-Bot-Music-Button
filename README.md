@@ -39,13 +39,7 @@ This is a template for a Music Discord bot with buttons, modal, and slash comman
 
 ```bash
 npm init or npm init -y (if you folder name not a space or special character)
-npm i discord.js
-npm i @discordjs/rest
-npm i @discordjs/opus
-npm i colors
-npm i distube
-npm i youtube-search
-npm i libsodium-wrappers
+npm i or npm install (install all packages)
 ```
 
 ## How to use

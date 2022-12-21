@@ -1,6 +1,5 @@
 const { PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const { YouTubeAPI } = require('../config.json');
-const search = require('youtube-search');
 
 module.exports = {
     name: 'interactionCreate',
@@ -17,17 +16,21 @@ module.exports = {
 
             const permissions = voiceChannel.permissionsFor(interaction.client.user);
 
-            if (!permissions.has(PermissionFlagsBits.VIEW_CHANNEL)) return interaction.reply({ content: 'I cannot connect to your voice channel, make sure I have the proper permissions!', ephemeral: true });
-            if (!permissions.has(PermissionFlagsBits.CONNECT)) return interaction.reply({ content: 'I cannot connect to your voice channel, make sure I have the proper permissions!', ephemeral: true });
-            if (!permissions.has(PermissionFlagsBits.SPEAK)) return interaction.reply({ content: 'I cannot connect to your voice channel, make sure I have the proper permissions!', ephemeral: true });
+            if (!permissions.has(PermissionFlagsBits.ViewChannel)) return interaction.reply({ content: 'I cannot connect to your voice channel, make sure I have the proper permissions!', ephemeral: true });
+            if (!permissions.has(PermissionFlagsBits.Connect)) return interaction.reply({ content: 'I cannot connect to your voice channel, make sure I have the proper permissions!', ephemeral: true });
+            if (!permissions.has(PermissionFlagsBits.Speak)) return interaction.reply({ content: 'I cannot connect to your voice channel, make sure I have the proper permissions!', ephemeral: true });
 
             await interaction.deferReply({ ephemeral: true });
 
             if (musicNameOrLink.includes('https://' || 'http://')) {
-                if (!musicNameOrLink.includes('youtube.com' || 'youtu.be')) { 
-                    return interaction.followUp({ embeds: [client.embeds.warn('⚠️ The link you provided is not supported!')] });
+                if (!musicNameOrLink.includes('youtube.com' || 'youtu.be')) {
+                    return interaction.followUp({ content: 'This is not a valid YouTube link!', ephemeral: true });
                 } else {
-                    await client.distube.play(voiceChannel, musicNameOrLink, { member: interaction.member });
+                    try {
+                        await client.distube.play(voiceChannel, musicNameOrLink, { member: interaction.member });
+                    } catch (err) {
+                        if (err) return interaction.editReply({ content: 'This is not a valid YouTube link!', ephemeral: true });
+                    }
                 }
             } else {
                 await client.distube.play(voiceChannel, musicNameOrLink, { member: interaction.member });
@@ -61,35 +64,25 @@ module.exports = {
             await interaction.editReply({ embeds: [musicEmbed] });
         } else if (interaction.customId === 'searchModal') {
             const searchName = interaction.fields.getTextInputValue('searchInput');
-            const limit = interaction.fields.getTextInputValue('limitInput');
+            
+            const search = await client.distube.search(searchName, { limit: 10, type: 'video' });
 
-            if (limit > 10) return interaction.reply({ content: 'Limit must be less than 10', ephemeral: true });
+            const nameReplace = searchName.replace(/ /g, '+');
 
-            var opts = {
-                maxResults: limit,
-                key: YouTubeAPI
-            };
-              
-            search(searchName, opts, async function(err, results) {
-                if (err) return console.log(`[ERROR] searchModal: ${err.stack}`);
+            const embed = new EmbedBuilder()
+                .setTitle('🔍 Youtube Search')
+                .setURL(`https://www.youtube.com/results?search_query=${nameReplace}`)
+                .setDescription(`**Name:** ${searchName}`)
+                .setColor('#6104b9')
+                .setImage(search[0].thumbnail)
+                .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: interaction.user.avatarURL({ dynamic: true }) })
+                .setTimestamp();
+                
+            for (let i = 0; i < search.length; i++) {
+                embed.addFields({ name: `${i + 1}. ${search[i].name}`, value: `**Channel:** ${search[i].uploader.name}\n**Link:** ${search[i].url}` });
+            }
 
-                const nameReplace = searchName.replace(/ /g, '+');
-
-                const embed = new EmbedBuilder()
-                    .setTitle('🔍 Youtube Search')
-                    .setURL(`https://www.youtube.com/results?search_query=${nameReplace}`)
-                    .setDescription(`**Name:** ${searchName}`)
-                    .setColor('#6104b9')
-                    .setImage(results[0].thumbnails.high.url)
-                    .setFooter({ text: `Requested by ${interaction.user.tag}`, iconURL: interaction.user.avatarURL({ dynamic: true }) })
-                    .setTimestamp();
-
-                for (let i = 0; i < results.length; i++) {
-                    embed.addFields({ name: `${results[i].title}`, value: `**Channel:** ${results[i].channelTitle}\n**Link:** ${results[i].link}` });
-                }
-
-                await interaction.reply({ embeds: [embed], ephemeral: true });
-            });
+            await interaction.reply({ embeds: [embed], ephemeral: true });
         }
     }
 }
