@@ -55,8 +55,7 @@ npm i or npm install (install all packages)
 8.  Open the link in a new tab and add the bot to your server.
 9.  Go to the `Bot` tab and copy the token.
 10. Go to the `General Information` tab and copy the application ID.
-11. Go to the [YouTube Data API](https://console.developers.google.com/apis/library/youtube.googleapis.com) and get a YouTube API key.
-12. Open the `config.json` file and paste the application ID, token, owner ID and YouTube API key.
+12. Open the `config.json` file and paste the application ID, token, owner ID.
 13. Run `node index.js` or `node .` in the terminal.
 
 ## Config
